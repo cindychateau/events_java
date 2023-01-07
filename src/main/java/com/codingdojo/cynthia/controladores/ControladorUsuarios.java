@@ -1,5 +1,7 @@
 package com.codingdojo.cynthia.controladores;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.codingdojo.cynthia.modelos.Event;
 import com.codingdojo.cynthia.modelos.State;
 import com.codingdojo.cynthia.modelos.User;
 import com.codingdojo.cynthia.servicios.AppService;
@@ -53,12 +56,31 @@ public class ControladorUsuarios {
 	}
 	
 	@GetMapping("/dashboard")
-	public String dashboard(HttpSession session) {
+	public String dashboard(HttpSession session,
+							@ModelAttribute("event") Event event,
+							Model model) {
+		/*Revisamos que haya iniciado sesion*/
 		User usuario_en_sesion = (User)session.getAttribute("user_session");
 		
 		if(usuario_en_sesion == null) {
 			return "redirect:/";
 		}
+		/*Revisamos que haya iniciado sesion*/
+		
+		//Mandamos los estados
+		model.addAttribute("states", State.States);
+		
+		//Obtengo usuario en sesión
+		User myUser = servicio.find_user(usuario_en_sesion.getId());
+		model.addAttribute("user", myUser); //Enviamos a dashboard el user
+		
+		//Mandamos las dos listas de eventos
+		String miEstado = usuario_en_sesion.getState();
+		List<Event> eventos_miestado = servicio.eventos_estado(miEstado);
+		List<Event> eventos_otrosedos = servicio.eventos_otros(miEstado);
+		
+		model.addAttribute("eventos_miestado", eventos_miestado);
+		model.addAttribute("eventos_otrosedos", eventos_otrosedos);
 		
 		return "dashboard.jsp";
 	}

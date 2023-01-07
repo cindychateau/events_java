@@ -14,4 +14,6 @@ public interface RepositorioEventos extends CrudRepository<Event, Long> {
 	
 	List<Event> findByStateIsNot(String state); //SELECT * FROM events WHERE state != <String state>
 	
+	//findByLocation
+	
 }
