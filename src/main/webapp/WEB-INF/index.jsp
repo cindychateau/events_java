@@ -13,7 +13,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col">
-				<h2>Regístrate</h2>
+				<h2>Regístra tu Usuario</h2>
 				<!-- Mi FORM FORM ya me crea el objeto. BindingResult solo funciona con form:form -->
 				<form:form action="/register" method="post" modelAttribute="nuevoUsuario">
 					<div class="form-group">
