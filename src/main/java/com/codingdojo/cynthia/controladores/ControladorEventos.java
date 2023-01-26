@@ -1,5 +1,9 @@
 package com.codingdojo.cynthia.controladores;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.codingdojo.cynthia.modelos.Event;
 import com.codingdojo.cynthia.modelos.Message;
@@ -34,7 +40,8 @@ public class ControladorEventos {
 	public String create(@Valid @ModelAttribute("event") Event event,
 						 BindingResult result,
 						 HttpSession session,
-						 Model model) {
+						 Model model,
+						 @RequestParam("imagen") MultipartFile imagen) {
 		
 		/*Revisamos que haya iniciado sesion*/
 		User usuario_en_sesion = (User)session.getAttribute("user_session");
@@ -65,6 +72,29 @@ public class ControladorEventos {
 			
 			return "dashboard.jsp";
 		} else {
+			
+			if(!imagen.isEmpty()) {
+				//Ruta
+				Path directorioImagenes = Paths.get("src/main/resources/static/img");
+				//Ruta Absoluta
+				String rutaAbsoluta = directorioImagenes.toFile().getAbsolutePath();
+				
+				try {
+					
+					//Imagen en Bytes
+					byte[] bytesImg = imagen.getBytes();
+					//Ruta completa, con todo y nombre de imagen
+					Path rutaCompleta = Paths.get(rutaAbsoluta+"/"+imagen.getOriginalFilename());
+					Files.write(rutaCompleta, bytesImg); //Guardar mi imagen en la ruta
+					
+					event.setImage(imagen.getOriginalFilename());
+					
+				} catch(IOException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
 			servicio.save_event(event);
 			return "redirect:/dashboard";
 		}

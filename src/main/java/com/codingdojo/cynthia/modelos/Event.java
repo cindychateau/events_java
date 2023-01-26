@@ -64,6 +64,8 @@ public class Event {
 	
 	@OneToMany(mappedBy="event", fetch=FetchType.LAZY)
 	private List<Message> messages; //Los mensajes publicados al evento
+	
+	private String image;
 
 	public Event() {
 	}
@@ -156,6 +158,14 @@ public class Event {
 
 	public void setMessages(List<Message> messages) {
 		this.messages = messages;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
     
     

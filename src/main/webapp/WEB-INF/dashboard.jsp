@@ -79,6 +79,7 @@
 						<th>Locación</th>
 						<th>Estado</th>
 						<th>Planner</th>
+						<th>Imagen</th>
 						<th>Acciones</th>
 					</tr>
 				</thead>
@@ -92,6 +93,11 @@
 							<td>${evento.location}</td>
 							<td>${evento.state}</td>
 							<td>${evento.planner.name}</td>
+							<td>
+								<c:if test="${not empty evento.image}">
+									<img src="/img/${evento.image}" class="img-fluid">
+								</c:if>
+							</td>
 							<td>
 								<c:if test="${evento.planner.id == user.id}">
 									<button class="btn btn-warning">
@@ -124,7 +130,7 @@
 		</div>
 		<div class="row">
 			<h2>Crear evento</h2>
-			<form:form action="/events/create" method="post" modelAttribute="event">
+			<form:form action="/events/create" method="post" modelAttribute="event" enctype="multipart/form-data">
 				<div class="form-group">
 					<form:label path="eventName">Nombre</form:label>
 					<form:input path="eventName" class="form-control"/>
@@ -147,6 +153,10 @@
 							<option value="${state}">${state}</option>
 						</c:forEach>
 					</form:select>
+				</div>
+				<div class="form-group">
+					<label>Imagen</label>
+					<input type="file" name="imagen" class="form-control" />
 				</div>
 				<form:hidden path="planner" value="${user.id}" />
 				<input type="submit" value="Crear Evento" class="btn btn-success" />
